@@ -1,0 +1,33 @@
+{
+  "name": "sumtex",
+  "version": "2.0.0",
+  "description": "An advanced mathematics platform that uses problems from past and contemporary textbooks",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krisyotam/sumtex.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^12.11.0",
+    "katex": "^0.16.44",
+    "next": "^16.2.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.2"
+  }
+}

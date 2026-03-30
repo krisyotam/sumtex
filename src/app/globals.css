@@ -1,0 +1,257 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+@font-face {
+  font-family: KaTeX_Main;
+  src: url('/fonts/KaTeX_Main-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+main {
+  font-family: KaTeX_Main, serif;
+}
+
+.katex {
+  font-size: 1.1em;
+}
+
+.centered-text {
+  margin: auto;
+  text-align: center;
+}
+
+#intro-window, #ending-window {
+  text-align: center;
+}
+
+#title {
+  font-size: 2.4em;
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+#subtitle {
+  font-size: 1.4em;
+}
+
+#hint-text {
+  width: fit-content;
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#hint-list {
+  padding-inline-start: 30px;
+  margin-top: 6px;
+}
+
+#hint-list li {
+  margin-top: 7px;
+}
+
+.latex-button {
+  font-family: KaTeX_Main, serif;
+  font-size: 1em;
+  background-color: white;
+  border: solid 2px black;
+  padding: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.latex-button:hover {
+  background-color: #eee;
+}
+
+.latex-button:focus {
+  outline: none;
+  background-color: #eee;
+}
+
+.latex-button:active {
+  outline: none;
+  background-color: #ccc;
+}
+
+.latex-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.latex-button.active {
+  background-color: #eee;
+}
+
+#left-buttons {
+  float: left;
+  display: inline-block;
+}
+
+#top-row::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+#score-wrapper {
+  display: inline-block;
+  width: 80px;
+  margin-left: calc(50% - 315px);
+}
+
+#timer-wrapper {
+  display: inline-block;
+  float: right;
+}
+
+#score, #timer {
+  font-family: KaTeX_Main, serif;
+}
+
+.latex {
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  border: solid 2px black;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  overflow-x: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-sizing: border-box;
+}
+
+.correct {
+  border-color: #0d0;
+}
+
+.target-math {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media only screen and (max-width: 992px) {
+  #container {
+    width: 85%;
+  }
+}
+
+#container {
+  width: 70%;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#out {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+textarea.latex-source {
+  font-family: 'Roboto Mono', monospace;
+  resize: none;
+  background-color: black;
+  font-size: 20px;
+  color: white;
+  width: 100%;
+  height: 100px;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.problem-header {
+  font-size: 1.5em;
+}
+
+.title {
+  font-weight: bold;
+}
+
+.out-container {
+  position: relative;
+}
+
+.latex.out {
+  position: relative;
+  width: 100%;
+}
+
+/* Leaderboard */
+.score-submission {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.player-name-input {
+  padding: 8px;
+  font-size: 1em;
+  border: solid 2px black;
+  font-family: KaTeX_Main, serif;
+  width: 200px;
+  margin-right: 10px;
+}
+
+.player-name-input:focus {
+  outline: none;
+  border-color: #666;
+}
+
+.leaderboard-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.leaderboard-list {
+  margin: 20px auto;
+  max-width: 500px;
+}
+
+.leaderboard-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  background: #fff;
+  border: 1px solid #ddd;
+  margin: 5px 0;
+  font-family: KaTeX_Main, serif;
+  text-align: left;
+}
+
+.leaderboard-entry .rank {
+  font-weight: bold;
+  width: 40px;
+  flex-shrink: 0;
+}
+
+.leaderboard-entry .name {
+  flex: 1;
+  margin: 0 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.leaderboard-entry .score {
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+#hint-container {
+  background-color: #fffbcc;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin: 5px 0;
+  font-size: 0.9em;
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
