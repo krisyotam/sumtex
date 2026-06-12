@@ -1,168 +1,117 @@
-# CLAUDE.md — SumTeX
+# CLAUDE.md -- SumTeX v3
 
-Project: SumTeX | Author: Kris Yotam | Updated: 2026-03-29
-
-## .claude/ Structure
-
-```
-.claude/
-├── CLAUDE.md              ← You are here. Core rules and quick reference.
-├── docs/                  ← Project standards and conventions.
-│   ├── comments.md        — Comment philosophy: Gwern-style, anti-patterns, density rules.
-│   ├── headers.md         — File header templates for every source file type.
-│   └── game-design.md     — Game mechanics, scoring, problem format, difficulty tiers.
-└── code/                  ← Language-specific coding guides.
-    ├── tsx.md             — React component conventions.
-    ├── ts.md              — TypeScript conventions (lib, data, utils).
-    └── css.md             — Tailwind/CSS patterns and constraints.
-```
-
-**docs/** contains project-wide standards that apply regardless of language. Read the relevant doc before working in that area.
-
-**code/** contains language-specific rules for how code is written and maintained within SumTeX. Consult before writing code in any language.
-
-**comments.md** (in docs/) governs all inline comments across every language. It overrides any language-specific comment habits. Read it once, obey it always.
+Project: SumTeX | Author: Kris Yotam | Updated: 2026-06-02
 
 ---
 
 ## 1. Mission
 
-SumTeX is a mathematics game. Not a LaTeX typing test. Not a quiz app with multiple choice.
+SumTeX is HackTheBox for mathematics. Problems from real textbooks, solved in LaTeX. The suckless approach: textbooks are king, written word and repetition over videos.
 
-Players receive genuine problems drawn from quality textbooks and mathematical writing. They solve them by entering LaTeX. The problems are hard. The game rewards fluency in both mathematical reasoning and notation. The community (starting with Kris) curates every problem set.
-
-The original TeXnique asked players to reproduce formulas. SumTeX asks players to solve problems. The distinction is fundamental: reproduction tests memory; solving tests understanding. SumTeX is for people who want to get better at mathematics, not people who want to type faster.
-
-Long-term goals:
-
-- **Problem sets from real textbooks.** Rudin, Artin, Munkres, Spivak, Atiyah-Macdonald. Each set tagged by source, topic, and difficulty.
-- **Community-curated content.** Problem submissions, solutions, and hints reviewed before inclusion.
-- **Difficulty tiers.** From undergraduate calculus to graduate algebra and analysis.
-- **No accounts yet.** The game works without auth. Leaderboard uses name entry. Accounts come later when there is a reason for them (progress tracking, problem submission).
-- **Public and free.** No paywalls, no ads, no tracking beyond what Firebase provides for the leaderboard.
+Players solve genuine problems from Rudin, Spivak, Artin, Munkres. They track progress across math areas via spider graphs, work through textbook paths, and contribute problems to the community. AI translates screenshots into MathJax via BYOK keys.
 
 ---
 
 ## 2. Philosophy
 
-Built on the same principles as krisyotam.com: FSF, Unix Way, Suckless Manifesto.
+FSF, Unix Way, Suckless Manifesto, Plan 9.
 
-- **No dependencies unless forced.** KaTeX for rendering, Firebase for leaderboard, Next.js for the framework. That is the dependency budget. Do not add npm packages without a compelling reason.
-- **Components do one thing.** Split when they start doing two.
-- **Static by default.** The game is client-rendered but the shell is static. No server-side data fetching for gameplay.
-- **JS bundle only shrinks.** Every change should leave the bundle equal or smaller.
-- **Problems are data, not code.** Problem sets live in `src/data/` as typed arrays. They are not embedded in components.
-- **KaTeX over MathJax.** Faster, smaller, sufficient. Do not introduce MathJax.
-- **No jQuery.** The original TeXnique used jQuery. SumTeX uses React. Do not reintroduce jQuery or any DOM manipulation library.
+- **10 runtime deps.** next, react, react-dom, postgres, drizzle-orm, @workos-inc/authkit-nextjs, better-react-mathjax, geist, server-only, zod. Do not add packages without explicit instruction.
+- **Components do one thing.** Split when they do two.
+- **MathJax for rendering.** Broader LaTeX coverage for real textbook problems.
+- **Problems live in Postgres.** Not in code files. Database is the source of truth.
+- **JS bundle only shrinks.** No charting libraries (spider graph is hand-rolled SVG).
+- **No jQuery, no Firebase.** v2 used Firebase. v3 uses self-hosted Postgres on STARGATE.
 
 ---
 
-## 3. Architecture
+## 3. Tech Stack
 
-### Directory Layout
+| Layer | Choice |
+|-------|--------|
+| Framework | Next.js 16 (App Router) |
+| Auth | WorkOS AuthKit (`@workos-inc/authkit-nextjs`) |
+| Database | Self-hosted Postgres on STARGATE |
+| ORM | Drizzle + drizzle-kit |
+| Math | MathJax via `better-react-mathjax` |
+| Styling | Tailwind 4 + CSS variables |
+| Fonts | Geist Sans + Geist Mono |
+
+---
+
+## 4. Architecture
 
 ```
 src/
-├── app/                   # Next.js App Router
-│   ├── layout.tsx         # Root layout (fonts, metadata, global CSS)
-│   ├── page.tsx           # Home page (renders Game)
-│   └── globals.css        # Global styles + KaTeX + Tailwind
-├── components/            # React components
-│   ├── Game.tsx           # Main game state machine (intro → playing → ended)
-│   ├── KaTeX.tsx          # KaTeX rendering wrapper (<span>-based, inline-safe)
-│   └── Leaderboard.tsx    # Firebase leaderboard (submit, filter, display)
-├── data/                  # Problem sets and game data
-│   ├── types.ts           # Problem interface definition
-│   ├── normalizations.ts  # LaTeX normalization rules for answer comparison
-│   ├── problems-demo.ts   # Solve-mode problems (with solutions + hints)
-│   └── problems-typesetting.ts  # Legacy typesetting problems (reproduce formula)
-└── lib/                   # Shared utilities
-    └── firebase.ts        # Firebase app + Firestore initialization
+├── app/                          # Next.js App Router
+│   ├── layout.tsx                # Root layout (Geist fonts, theme, MathJax)
+│   ├── globals.css               # Color scheme from notes.krisyotam.com
+│   ├── page.tsx                  # Landing page
+│   ├── callback/route.ts         # WorkOS auth callback
+│   ├── sign-in/route.ts          # WorkOS sign-in redirect
+│   ├── (app)/                    # Authenticated routes
+│   │   ├── play/                 # Game modes (timed/zen)
+│   │   ├── problems/            # Browse, view, submit problems
+│   │   ├── paths/               # Textbook paths
+│   │   ├── roadmaps/            # Multi-subject learning paths
+│   │   ├── collections/         # Curated problem sets
+│   │   ├── leaderboard/         # Rankings
+│   │   ├── forum/               # Discussion
+│   │   ├── profile/             # Edit profile + settings
+│   │   └── u/[username]/        # Public profiles
+│   └── api/                     # API routes
+├── components/
+│   ├── ui/                      # Primitives
+│   ├── math/                    # MathJax wrapper + provider
+│   ├── game/                    # Game shell, problem cards, timer
+│   ├── profile/                 # Spider graph, profile card
+│   ├── forum/                   # Thread/reply components
+│   └── navigation/              # Header
+├── lib/
+│   ├── db/                      # Drizzle schema, connection, migrations
+│   ├── auth/                    # WorkOS session helpers
+│   ├── ai/                      # BYOK encryption, providers, screenshot
+│   ├── game/                    # Scoring, answer checking, normalizations
+│   ├── theme.tsx                # Light/dark theme provider
+│   └── utils.ts                 # Utilities
+├── hooks/                       # React hooks
+├── types/                       # TypeScript types (inferred from Drizzle)
+scripts/
+├── seed.ts                      # Seed subjects + forum categories
+└── migrate.ts                   # Run migrations
+proxy.ts                         # WorkOS AuthKit proxy (Next.js 16)
 ```
-
-### Game Modes
-
-| Mode | Source | Mechanic |
-|------|--------|----------|
-| Solve | `problems-demo.ts` | Player reads problem, enters LaTeX solution. Checked against `solution` field. |
-| Typeset | `problems-typesetting.ts` | Player sees rendered formula, reproduces the LaTeX source. Legacy mode from TeXnique. |
-
-The game auto-selects solve mode when problems have `solution` fields. As problem sets grow, the typesetting mode will be deprecated or relegated to a separate practice mode.
-
-### State Machine
-
-```
-intro → playing → ended → intro
-```
-
-`Game.tsx` manages all state. No global store, no context providers, no reducers. When the game grows complex enough to warrant state extraction, use a custom hook, not a state library.
 
 ---
 
-## 4. Problem Format
+## 5. Component Naming
 
-Every problem is a `Problem` object:
-
-```ts
-interface Problem {
-  title: string       // Display name (e.g., "Basic Quadratic Equation")
-  description: string // Brief context or source attribution
-  latex: string       // The problem statement, rendered via KaTeX
-  solution?: string   // Expected answer in LaTeX (for solve mode)
-  hint?: string       // Optional hint, shown at point cost
-}
-```
-
-### Rules for Adding Problems
-
-- Every new problem MUST have a `solution` field. Typesetting-only problems (no solution) are legacy.
-- `latex` is the problem statement. It should be a complete, well-formed mathematical expression or equation.
-- `solution` is the canonical answer. Normalization handles minor formatting differences.
-- `hint` is optional. If provided, viewing it halves the point value.
-- `title` should name the theorem, technique, or topic. Not "Problem 47".
-- `description` should credit the source: textbook name, author, problem number when known.
-
-### Future: Problem Sets
-
-Problems will eventually be organized into sets (by textbook, by topic, by difficulty). The data model will expand but the core `Problem` interface will remain the unit of play.
+camelCase filenames: `gameShell.tsx`, `spiderGraph.tsx`, `mathJax.tsx`
 
 ---
 
-## 5. Answer Checking
+## 6. Scoring
 
-Answers are compared as normalized LaTeX strings. The normalization pipeline (`src/data/normalizations.ts`) applies regex rules to handle equivalent notations:
+| Difficulty | Base XP | Hint Penalty | Streak Bonus |
+|-----------|---------|-------------|-------------|
+| 1 (Foundations) | 10 | -50% | +2/consecutive |
+| 2 (Intermediate) | 25 | -50% | +5/consecutive |
+| 3 (Advanced) | 50 | -50% | +10/consecutive |
+| 4 (Research) | 100 | -50% | +20/consecutive |
 
-- `\not\in` → `\notin`
-- `\not=` → `\neq`
-- `\mid` → `|`
-- `\Longleftrightarrow` → `\iff`
-- `\Longrightarrow` → `\implies`
-- Escaped spaces → literal spaces
-
-This is fragile. Long-term, answer checking should compare rendered output or use a CAS. For now, string comparison with normalization is the mechanism. When it fails, the fix is to add a normalization rule or accept multiple solution forms, not to switch to a different comparison strategy without a plan.
+Timed mode: 1.5x multiplier. Streak resets on skip or wrong answer.
 
 ---
 
-## 6. Firebase
+## 7. Answer Checking
 
-Firestore is used exclusively for the leaderboard. The game itself has no server dependency.
+Three solution types in `src/lib/game/checker.ts`:
 
-- Project: `texnique-v3` (inherited from the original TeXnique fork)
-- Collection: `leaderboard` (fields: `name`, `score`, `timestamp`)
-- Queries: filtered by time range (today, month, all-time), ordered by score descending, limited to 10
+- **exact**: Normalize both strings, compare. Normalization rules in `normalizations.ts`.
+- **numeric**: Parse as numbers, compare within epsilon (0.001).
+- **set**: Parse as comma-separated, normalize each, compare as unordered sets.
 
-The Firebase config is committed to the repo. This is a public game with a public leaderboard. The API key is restricted to Firestore reads/writes on the `leaderboard` collection. Do not add Firebase Auth or any other Firebase service without explicit instruction.
-
----
-
-## 7. Scoring
-
-- Points per problem: `ceil(latex.length / 10)`
-- Hint penalty: points halved (minimum 1)
-- Timed mode: 3 minutes
-- Zen mode: no timer
-
-Scoring will evolve. Difficulty-based multipliers, streak bonuses, and problem-set-specific scoring are all on the table. The current system is a placeholder.
+`problem_solutions` table allows multiple accepted forms per problem.
 
 ---
 
@@ -170,15 +119,13 @@ Scoring will evolve. Difficulty-based multipliers, streak bonuses, and problem-s
 
 ### ABSOLUTE RULE: DO NOT BUILD UNLESS TOLD
 
-**NEVER** run `npm run build`, `npm run dev`, or ANY build/compile command unless Kris **explicitly** says "build" or "dev server" in his message. This has frozen the system. No exceptions. Tell Kris and let him decide.
-
-When asked: `npm run dev` for development, `npm run build` for production.
+**NEVER** run `npm run build`, `npm run dev`, or ANY build/compile command unless Kris **explicitly** says "build" or "dev server" in his message. No exceptions.
 
 ---
 
 ## 9. Git Commits
 
-Standard git workflow. No special commit script. Write clear, concise commit messages. Do not add Co-Authored-By lines.
+Standard git workflow. Clear, concise messages. No Co-Authored-By lines.
 
 ---
 
@@ -186,24 +133,14 @@ Standard git workflow. No special commit script. Write clear, concise commit mes
 
 - Write plainly. Short sentences. No filler.
 - Never use em dashes. Use periods, commas, or restructure.
-- Never open with "A comprehensive..." or "An overview of..."
 - Banned words: "explore", "delve", "leverage", "utilize", "facilitate", "landscape", "robust", "streamline", "cutting-edge", "dive into", "harness"
-- No padding: "various", "numerous", "a wide range of", "and more", "etc."
 - No exclamation marks in descriptions.
-- Prefer "is" over "serves as". Prefer "for" over "in order to".
 
 ---
 
-## 11. HTML Nesting
-
-KaTeX renders block-level content. The `KaTeX` component uses `<span>` to stay inline-safe. Title and subtitle wrappers use `<div>`, not `<p>`, to avoid hydration errors from invalid nesting. Never put `<KaTeX>` inside `<p>` tags unless you are certain the rendered output contains no block elements.
-
----
-
-## 12. Constants
+## 11. Constants
 
 - Owner: **Kris Yotam**
 - Game name: **SumTeX** (capital S, capital T, capital X)
 - LaTeX rendering: **Sum\TeX** (the TeX ligature)
-- Firebase project: `texnique-v3`
 - Default timer: 180 seconds

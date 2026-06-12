@@ -1,257 +1,149 @@
 @import "tailwindcss";
-@import "katex/dist/katex.min.css";
 
-@font-face {
-  font-family: KaTeX_Main;
-  src: url('/fonts/KaTeX_Main-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
+:root {
+  --bg-canvas: #f0f0f0;
+  --bg-primary: #ffffff;
+  --bg-secondary: #fafafc;
+  --bg-tertiary: #f0f0f4;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-muted: #888888;
+  --border-color: #e0e0e0;
+  --link-color: rgba(10, 132, 255, 1);
+  --link-visited: #af52de;
+  --accent: #333333;
+  --accent-muted: #666666;
+
+  --background: 0 0% 100%;
+  --foreground: 0 0% 20%;
+  --card: 240 20% 99%;
+  --card-foreground: 0 0% 20%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 20%;
+  --primary: 0 0% 20%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 240 20% 98%;
+  --secondary-foreground: 0 0% 20%;
+  --muted: 240 20% 98%;
+  --muted-foreground: 0 0% 53%;
+  --accent: 240 20% 98%;
+  --accent-foreground: 0 0% 20%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 88%;
+  --input: 0 0% 88%;
+  --ring: 0 0% 20%;
+  --radius: 0.125rem;
+
+  --topbar-height: 48px;
+
+  --font-body: system-ui, -apple-system, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-sans: system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", Menlo, monospace;
 }
 
-main {
-  font-family: KaTeX_Main, serif;
+.dark {
+  --bg-canvas: hsl(0 0% 5%);
+  --bg-primary: hsl(0 0% 9%);
+  --bg-secondary: hsl(0 0% 12%);
+  --bg-tertiary: hsl(0 0% 16%);
+  --text-primary: hsl(0 0% 100%);
+  --text-secondary: hsl(0 0% 75%);
+  --text-muted: hsl(0 0% 50%);
+  --border-color: hsl(0 0% 20%);
+  --link-color: #79a8ff;
+  --link-visited: #f78fe7;
+  --accent: hsl(0 0% 100%);
+  --accent-muted: hsl(0 0% 75%);
+
+  --background: 0 0% 9%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 9%;
+  --card-foreground: 0 0% 100%;
+  --popover: 0 0% 9%;
+  --popover-foreground: 0 0% 100%;
+  --primary: 0 0% 100%;
+  --primary-foreground: 0 0% 9%;
+  --secondary: 0 0% 12%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 50%;
+  --accent: 0 0% 12%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
+  --ring: 0 0% 100%;
 }
 
-.katex {
-  font-size: 1.1em;
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --radius: var(--radius);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
-.centered-text {
-  margin: auto;
-  text-align: center;
-}
-
-#intro-window, #ending-window {
-  text-align: center;
-}
-
-#title {
-  font-size: 2.4em;
-  margin-top: 5px;
-  margin-bottom: 15px;
-}
-
-#subtitle {
-  font-size: 1.4em;
-}
-
-#hint-text {
-  width: fit-content;
-  text-align: left;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#hint-list {
-  padding-inline-start: 30px;
-  margin-top: 6px;
-}
-
-#hint-list li {
-  margin-top: 7px;
-}
-
-.latex-button {
-  font-family: KaTeX_Main, serif;
-  font-size: 1em;
-  background-color: white;
-  border: solid 2px black;
-  padding: 10px;
-  margin-left: 5px;
-  margin-right: 5px;
-  cursor: pointer;
-}
-
-.latex-button:hover {
-  background-color: #eee;
-}
-
-.latex-button:focus {
-  outline: none;
-  background-color: #eee;
-}
-
-.latex-button:active {
-  outline: none;
-  background-color: #ccc;
-}
-
-.latex-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.latex-button.active {
-  background-color: #eee;
-}
-
-#left-buttons {
-  float: left;
-  display: inline-block;
-}
-
-#top-row::after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-#score-wrapper {
-  display: inline-block;
-  width: 80px;
-  margin-left: calc(50% - 315px);
-}
-
-#timer-wrapper {
-  display: inline-block;
-  float: right;
-}
-
-#score, #timer {
-  font-family: KaTeX_Main, serif;
-}
-
-.latex {
-  height: 100px;
-  margin-left: auto;
-  margin-right: auto;
-  border: solid 2px black;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  overflow-x: auto;
-  padding-left: 10px;
-  padding-right: 10px;
+* {
   box-sizing: border-box;
 }
 
-.correct {
-  border-color: #0d0;
+html {
+  scroll-behavior: smooth;
 }
 
-.target-math {
-  margin-left: auto;
-  margin-right: auto;
+body {
+  --font-body: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), "JetBrains Mono", "Fira Code", Menlo, monospace;
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  line-height: 1.7;
 }
 
-@media only screen and (max-width: 992px) {
-  #container {
-    width: 85%;
-  }
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-#container {
-  width: 70%;
-  margin-top: 50px;
-  margin-left: auto;
-  margin-right: auto;
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
 }
 
-#out {
-  margin-left: auto;
-  margin-right: auto;
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
 }
 
-textarea.latex-source {
-  font-family: 'Roboto Mono', monospace;
-  resize: none;
-  background-color: black;
-  font-size: 20px;
-  color: white;
-  width: 100%;
-  height: 100px;
-  padding: 8px;
-  box-sizing: border-box;
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
-.problem-header {
-  font-size: 1.5em;
+a {
+  color: var(--link-color);
+  text-decoration: none;
 }
 
-.title {
-  font-weight: bold;
-}
-
-.out-container {
-  position: relative;
-}
-
-.latex.out {
-  position: relative;
-  width: 100%;
-}
-
-/* Leaderboard */
-.score-submission {
-  margin: 20px 0;
-  text-align: center;
-}
-
-.player-name-input {
-  padding: 8px;
-  font-size: 1em;
-  border: solid 2px black;
-  font-family: KaTeX_Main, serif;
-  width: 200px;
-  margin-right: 10px;
-}
-
-.player-name-input:focus {
-  outline: none;
-  border-color: #666;
-}
-
-.leaderboard-controls {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 15px 0;
-}
-
-.leaderboard-list {
-  margin: 20px auto;
-  max-width: 500px;
-}
-
-.leaderboard-entry {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 16px;
-  background: #fff;
-  border: 1px solid #ddd;
-  margin: 5px 0;
-  font-family: KaTeX_Main, serif;
-  text-align: left;
-}
-
-.leaderboard-entry .rank {
-  font-weight: bold;
-  width: 40px;
-  flex-shrink: 0;
-}
-
-.leaderboard-entry .name {
-  flex: 1;
-  margin: 0 20px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 200px;
-}
-
-.leaderboard-entry .score {
-  font-weight: bold;
-  flex-shrink: 0;
-}
-
-#hint-container {
-  background-color: #fffbcc;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 8px 12px;
-  margin: 5px 0;
-  font-size: 0.9em;
-  display: inline-block;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+a:hover {
+  text-decoration: underline;
 }
