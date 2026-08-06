@@ -6,6 +6,7 @@ import {
   integer,
   boolean,
   timestamp,
+  jsonb,
   uniqueIndex,
   index,
 } from "drizzle-orm/pg-core";
@@ -19,7 +20,7 @@ export const users = pgTable(
   "users",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    workosId: text("workos_id").notNull(),
+    clerkId: text("clerk_id").notNull(),
     username: varchar("username", { length: 40 }).notNull(),
     displayName: varchar("display_name", { length: 100 }),
     email: varchar("email", { length: 255 }).notNull(),
@@ -36,7 +37,7 @@ export const users = pgTable(
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
-    uniqueIndex("users_workos_id_idx").on(t.workosId),
+    uniqueIndex("users_clerk_id_idx").on(t.clerkId),
     uniqueIndex("users_username_idx").on(t.username),
     uniqueIndex("users_email_idx").on(t.email),
   ]
@@ -300,6 +301,65 @@ export const gameSessions = pgTable("game_sessions", {
 });
 
 // ============================================================
+// ARITHMETIC
+// ============================================================
+
+export const arithmeticSessions = pgTable(
+  "arithmetic_sessions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    mode: varchar("mode", { length: 20 }).notNull(),
+    category: varchar("category", { length: 40 }).notNull(),
+    submode: varchar("submode", { length: 20 }),
+    star: integer("star"),
+    customConfig: jsonb("custom_config"),
+    seed: integer("seed").notNull(),
+    durationSeconds: integer("duration_seconds"),
+    score: integer("score").notNull().default(0),
+    totalAttempts: integer("total_attempts").notNull().default(0),
+    correctAttempts: integer("correct_attempts").notNull().default(0),
+    startedAt: timestamp("started_at", { withTimezone: true }).notNull().defaultNow(),
+    endedAt: timestamp("ended_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("arithmetic_sessions_user_idx").on(t.userId),
+    index("arithmetic_sessions_category_idx").on(t.category),
+    index("arithmetic_sessions_started_idx").on(t.startedAt),
+  ]
+);
+
+export const arithmeticAttempts = pgTable(
+  "arithmetic_attempts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    sessionId: uuid("session_id")
+      .notNull()
+      .references(() => arithmeticSessions.id, { onDelete: "cascade" }),
+    generatedPrompt: jsonb("generated_prompt").notNull(),
+    displayExpression: text("display_expression").notNull(),
+    canonicalAnswer: varchar("canonical_answer", { length: 120 }).notNull(),
+    userAnswer: varchar("user_answer", { length: 120 }).notNull(),
+    correct: boolean("correct").notNull(),
+    elapsedMs: integer("elapsed_ms").notNull(),
+    scoreDelta: integer("score_delta").notNull().default(0),
+    category: varchar("category", { length: 40 }).notNull(),
+    submode: varchar("submode", { length: 20 }),
+    star: integer("star"),
+    metadata: jsonb("metadata"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("arithmetic_attempts_session_idx").on(t.sessionId),
+    index("arithmetic_attempts_category_idx").on(t.category),
+    index("arithmetic_attempts_created_idx").on(t.createdAt),
+  ]
+);
+
+// ============================================================
 // LEADERBOARD
 // ============================================================
 
@@ -403,6 +463,7 @@ export const userApiKeys = pgTable(
 export const usersRelations = relations(users, ({ many }) => ({
   progress: many(userProgress),
   sessions: many(gameSessions),
+  arithmeticSessions: many(arithmeticSessions),
   submittedProblems: many(problems),
   apiKeys: many(userApiKeys),
   threads: many(forumThreads),
@@ -499,6 +560,24 @@ export const gameSessionsRelations = relations(gameSessions, ({ one }) => ({
   user: one(users, {
     fields: [gameSessions.userId],
     references: [users.id],
+  }),
+}));
+
+export const arithmeticSessionsRelations = relations(
+  arithmeticSessions,
+  ({ one, many }) => ({
+    user: one(users, {
+      fields: [arithmeticSessions.userId],
+      references: [users.id],
+    }),
+    attempts: many(arithmeticAttempts),
+  })
+);
+
+export const arithmeticAttemptsRelations = relations(arithmeticAttempts, ({ one }) => ({
+  session: one(arithmeticSessions, {
+    fields: [arithmeticAttempts.sessionId],
+    references: [arithmeticSessions.id],
   }),
 }));
 

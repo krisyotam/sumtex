@@ -1,105 +1,64 @@
-import { Header } from "@/components/navigation/header";
-
-export default function LandingPage() {
+export default function HomePage() {
   return (
-    <div
-      className="min-h-screen flex flex-col"
-      style={{ background: "var(--bg-canvas)" }}
-    >
-      <Header />
-      <main className="flex-1 flex flex-col items-center justify-center px-6">
-        <div className="max-w-2xl text-center">
-          <h1
-            className="text-4xl font-semibold tracking-tight mb-4"
-            style={{ color: "var(--text-primary)" }}
-          >
-            SumTeX
-          </h1>
-          <p
-            className="text-lg mb-8 leading-relaxed"
-            style={{ color: "var(--text-secondary)" }}
-          >
-            Mathematics is learned through textbooks and repetition, not videos.
-            Real problems from Rudin, Spivak, Artin, Munkres, and more. Solve
-            them. Track your progress. Get better.
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            <a
-              href="/play"
-              className="px-5 py-2.5 text-sm font-medium rounded no-underline transition-colors"
-              style={{
-                background: "var(--text-primary)",
-                color: "var(--bg-primary)",
-              }}
-            >
-              Start solving
-            </a>
-            <a
-              href="/problems"
-              className="px-5 py-2.5 text-sm font-medium rounded no-underline transition-colors"
-              style={{
-                background: "var(--bg-primary)",
-                color: "var(--text-primary)",
-                border: "1px solid var(--border-color)",
-              }}
-            >
-              Browse problems
-            </a>
-          </div>
-        </div>
+    <main className="relative min-h-screen overflow-hidden bg-[#111111] text-[#f2f0ea]">
+      <div className="absolute right-8 top-5 flex items-center gap-3 text-xs text-[#8d8d8d]">
+        <a href="/play/mental-arithmetic" className="rounded-full border border-[#303030] px-4 py-2 text-[#d8d5ce] no-underline">
+          Mental Arithmetic
+        </a>
+        <a href="/profile" className="flex h-8 w-8 items-center justify-center rounded-full bg-[#202020] text-[#d8d5ce] no-underline">
+          S
+        </a>
+      </div>
 
-        <div
-          className="mt-16 grid grid-cols-3 gap-8 max-w-3xl w-full"
-          style={{ color: "var(--text-secondary)" }}
-        >
-          <div className="text-center">
-            <div
-              className="text-2xl font-semibold mb-1"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Textbooks
-            </div>
-            <p className="text-sm">
-              Problems pulled from qualified mathematical texts. Spivak,
-              Rudin, Artin, Munkres.
-            </p>
-          </div>
-          <div className="text-center">
-            <div
-              className="text-2xl font-semibold mb-1"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Paths
-            </div>
-            <p className="text-sm">
-              Work through a textbook end to end. Track your progress across
-              chapters.
-            </p>
-          </div>
-          <div className="text-center">
-            <div
-              className="text-2xl font-semibold mb-1"
-              style={{ color: "var(--text-primary)" }}
-            >
-              Community
-            </div>
-            <p className="text-sm">
-              Submit problems, discuss solutions, build your profile. Open
-              source questions.
-            </p>
-          </div>
+      <div className="pointer-events-none absolute inset-0">
+        <span className="absolute left-[6%] top-[16%] text-[#777]">+</span>
+        <span className="absolute left-[25%] top-[38%] text-[#777]">.</span>
+        <span className="absolute right-[18%] top-[28%] text-[#777]">.</span>
+        <span className="absolute bottom-[28%] left-[58%] text-[#777]">+</span>
+        <span className="absolute bottom-[18%] right-[7%] text-[#777]">.</span>
+      </div>
+
+      <section className="mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center px-5 pb-24">
+        <h1 className="mb-7 font-serif text-5xl font-semibold tracking-normal sm:text-6xl">
+          SumTex <span className="align-baseline text-xl italic text-[#7a7a7a]">v1</span>
+        </h1>
+        <form action="/problems" className="flex h-14 w-full items-center rounded-full border border-[#303030] bg-[#1f1f1f] px-4 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
+          <span className="mr-3 text-[#8a8a8a]">Search</span>
+          <input
+            name="q"
+            placeholder="Mental arithmetic, calculus, algebra"
+            className="min-w-0 flex-1 bg-transparent text-sm text-[#dedbd2] outline-none placeholder:text-[#696969]"
+          />
+          <button
+            type="submit"
+            className="ml-3 flex h-10 w-10 items-center justify-center rounded-full bg-[#747474] text-lg leading-none text-[#111111]"
+            aria-label="Search"
+          >
+            Go
+          </button>
+        </form>
+      </section>
+
+      <footer className="absolute inset-x-0 bottom-6 grid grid-cols-3 items-end px-10 text-xs text-[#676767]">
+        <div />
+        <div className="text-center">
+          <div>Generated drills</div>
+          <div className="mt-1 font-mono text-base text-[#aaa]">11 categories</div>
         </div>
-      </main>
-      <footer
-        className="py-4 text-center text-xs border-t"
-        style={{
-          color: "var(--text-muted)",
-          borderColor: "var(--border-color)",
-          background: "var(--bg-primary)",
-        }}
-      >
-        SumTeX by Kris Yotam
+        <div className="justify-self-end">
+          <a href="/play" className="text-[#676767] no-underline">
+            Play
+          </a>
+          <span className="mx-2">.</span>
+          <a href="/problems" className="text-[#676767] no-underline">
+            Problems
+          </a>
+          <span className="mx-2">.</span>
+          <a href="/sign-in" className="text-[#676767] no-underline">
+            Sign in
+          </a>
+        </div>
       </footer>
-    </div>
+    </main>
   );
 }

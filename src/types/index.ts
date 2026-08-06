@@ -9,6 +9,8 @@ import type {
   collections,
   userProgress,
   gameSessions,
+  arithmeticSessions,
+  arithmeticAttempts,
   leaderboardEntries,
   forumCategories,
   forumThreads,
@@ -25,6 +27,8 @@ export type Roadmap = InferSelectModel<typeof roadmaps>;
 export type Collection = InferSelectModel<typeof collections>;
 export type UserProgress = InferSelectModel<typeof userProgress>;
 export type GameSession = InferSelectModel<typeof gameSessions>;
+export type ArithmeticSession = InferSelectModel<typeof arithmeticSessions>;
+export type ArithmeticAttempt = InferSelectModel<typeof arithmeticAttempts>;
 export type LeaderboardEntry = InferSelectModel<typeof leaderboardEntries>;
 export type ForumCategory = InferSelectModel<typeof forumCategories>;
 export type ForumThread = InferSelectModel<typeof forumThreads>;

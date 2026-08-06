@@ -1,12 +1,15 @@
 import "server-only";
-import { withAuth } from "@workos-inc/authkit-nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 export async function getSession() {
-  const session = await withAuth();
-  return session;
+  return auth();
 }
 
 export async function requireSession() {
-  const session = await withAuth({ ensureSignedIn: true });
+  const session = await auth();
+  if (!session.isAuthenticated) {
+    throw new Error("Unauthorized");
+  }
+
   return session;
 }

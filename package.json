@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test:arithmetic": "tsx scripts/test-arithmetic.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
@@ -19,7 +20,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@workos-inc/authkit-nextjs": "latest",
+    "@clerk/nextjs": "^7.5.17",
     "better-react-mathjax": "^2.1.0",
     "drizzle-orm": "^0.44.0",
     "geist": "^1.4.1",

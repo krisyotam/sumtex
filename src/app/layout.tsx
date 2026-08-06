@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { ThemeProvider } from "@/lib/theme";
@@ -19,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body>
-        <ThemeProvider>
-          <MathJaxProvider>{children}</MathJaxProvider>
-        </ThemeProvider>
+        <ClerkProvider dynamic>
+          <ThemeProvider>
+            <MathJaxProvider>{children}</MathJaxProvider>
+          </ThemeProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
